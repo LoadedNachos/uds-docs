@@ -8,7 +8,26 @@ export default defineConfig({
     redirects:
     {
         '/docs': '/',
-        '/en': '/'
+        '/en': '/',
+        '/cli/command-reference/uds/': '/reference/cli/commands/uds',
+        '/cli/command-reference/uds_completion/': '/reference/cli/commands/uds_completion',
+        '/cli/command-reference/uds_completion_bash/': '/reference/cli/commands/uds_completion_bash',
+        '/cli/command-reference/uds_completion_fish/': '/reference/cli/commands/uds_completion_fish',
+        '/cli/command-reference/uds_completion_zsh/': '/reference/cli/commands/uds_completion_zsh',
+        '/cli/command-reference/uds_create/': '/reference/cli/commands/uds_create',
+        '/cli/command-reference/uds_deploy/': '/reference/cli/commands/uds_deploy',
+        '/cli/command-reference/uds_dev/': '/reference/cli/commands/uds_dev',
+        '/cli/command-reference/uds_dev_deploy/': '/reference/cli/commands/uds_dev_deploy',
+        '/cli/command-reference/uds_inspect/': '/reference/cli/commands/uds_inspect',
+        '/cli/command-reference/uds_logs/': '/reference/cli/commands/uds_logs',
+        '/cli/command-reference/uds_monitor/': '/reference/cli/commands/uds_monitor',
+        '/cli/command-reference/uds_monitor_pepr/': '/reference/cli/commands/uds_monitor_pepr',
+        '/cli/command-reference/uds_publish/': '/reference/cli/commands/uds_publish',
+        '/cli/command-reference/uds_pull/': '/reference/cli/commands/uds_pull',
+        '/cli/command-reference/uds_remove/': '/reference/cli/commands/uds_remove',
+        '/cli/command-reference/uds_run/': '/reference/cli/commands/uds_run',
+        '/cli/command-reference/uds_ui/': '/reference/cli/commands/uds_ui',
+        '/cli/command-reference/uds_version/': '/reference/cli/commands/uds_version',
     },
     integrations: [starlight({
         defaultLocale: 'en',
