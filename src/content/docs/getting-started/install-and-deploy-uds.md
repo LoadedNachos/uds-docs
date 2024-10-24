@@ -26,7 +26,7 @@ For additional information on UDS Bundles, please see the [UDS Bundles](/structu
 
 In this section, you will deploy UDS Core for the first time.
 
-### Step 1: Install the [UDS CLI](https://uds.defenseunicorns.com/cli/)
+### Step 1: Install the [UDS CLI](https://uds.defenseunicorns.com/reference/cli/overview)
 
 The very first step is installation of the UDS CLI. Having installed Homebrew previously, you can do so with the
 following command:
