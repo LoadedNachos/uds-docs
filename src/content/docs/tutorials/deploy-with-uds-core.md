@@ -7,14 +7,14 @@ sidebar:
 
 ## Sample Application with UDS Core
 
-This tutorial uses UDS CLI to deploy an example application, [podinfo](https://github.com/stefanprodan/podinfo), on top of UDS Core as a UDS Bundle.
+This tutorial uses UDS CLI to deploy an example application, [podinfo](https://github.com/stefanprodan/podinfo), alongside UDS Core as a UDS Bundle.
 
 ### Prerequisites
 
 - [Zarf](https://docs.zarf.dev/getting-started/)
 - [UDS CLI](https://uds.defenseunicorns.com/reference/cli/overview/)
 - [Docker](https://www.docker.com/)
-- [k3d](https://k3d.io/v5.6.0/)
+- [k3d](https://k3d.io)
 
 ### Quickstart
 
@@ -162,34 +162,35 @@ You can now deploy the bundle to create the k3d cluster in order to deploy UDS C
 uds deploy uds-bundle-podinfo-bundle-*-0.0.1.tar.zst --confirm
 ```
 
-#### Interact with Cluster (Optional)
+#### Interact with Cluster
 
-Once successfully deployed, you have the option interact with the deployed cluster and applications using [kubectl](https://kubernetes.io/docs/tasks/tools/) or [k9s](https://k9scli.io/topics/install/). Please note that the output for your `podinfo` pod will likely have a different name:
+Once successfully deployed, you can interact with the deployed cluster and applications using [kubectl](https://kubernetes.io/docs/tasks/tools/) or [k9s](https://k9scli.io/topics/install/). In the command below, we are listing pods and services in `podinfo` namesace that were just deployed as part of the UDS Bundle. Please note that the output for your `podinfo` pod will likely have a different name:
 
 ```bash
-kubectl get pods -n podinfo
-NAME                       READY   STATUS    RESTARTS   AGE
-podinfo-67bf846d65-hrl59   1/1     Running   0          66s
+kubectl get pods,services -n podinfo
+NAME                           READY   STATUS    RESTARTS   AGE
+pod/podinfo-5cbbf59f6d-bqhsk   1/1     Running   0          2m
+
+NAME              TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)             AGE
+service/podinfo   ClusterIP   10.43.63.124   <none>        9898/TCP,9999/TCP   2m
 ```
 
 Connect to `podinfo` using `kubectl port-forward`:
 
 ```bash
-kubectl port-forward pod/<pod_name> <local_port>:9898
+kubectl port-forward service/<service_name> <local_port>:9898
 ```
 
 Example command using the above sample output from `get pods`:
 
 ```bash
-kubectl port-forward pod/podinfo-67bf846d65-hrl59 9898:9898 -n podinfo
+kubectl port-forward service/podinfo 9898:9898 -n podinfo
 ```
 
-You can now use a web browser to naviage to `http://localhost:<local_port>` to interact with `podinfo`.
+Curl metrics, view pod logs
 
-#### Clean up
+You can now use a web browser to naviage to `http://localhost:9898` to interact with `podinfo`.
 
-Execute the following command to clean up your cluster:
+#### Next Steps
 
-```bash
-k3d cluster delete uds
-```
+In this section, a Zarf Package was created that consists of the sample application, `podinfo`. The resulting `podinfo` Zarf Package was added UDS Bundle, where additional Zarf Packages, such as a K3d cluster, Zarf Internal components, and UDS Core were included. With the stack now deployed, visit the next page to discover how you can integrate the application with the monitoring, logging, security and other services provided by UDS Core.

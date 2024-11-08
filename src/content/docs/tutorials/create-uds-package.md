@@ -1,0 +1,227 @@
+---
+title: Integrating an Application with UDS Core
+
+sidebar:
+  order: 2
+---
+
+## Background
+When UDS Core is deployed into a Kubernetes Cluster, an [operator](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/) is deployed. An operator allows users to extend the functionality of their Kubernetes clusters via [Custom Resource Definitions](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) and custom controllers. This operator, henceforth known as the UDS Operator, looks for `Package` Custom Resources to be created. When a user creates a `Package` resource, the UDS Operator processes the request and performs the necessary operations to create the package per the [specification](https://github.com/defenseunicorns/uds-core/blob/main/docs/reference/configuration/custom%20resources/packages-v1alpha1-cr.md) given.
+
+Read more about the UDS Operator [here](https://uds.defenseunicorns.com/reference/configuration/uds-operator/).
+
+### Integrate Podinfo with UDS Core
+You can think of the UDS Operator as the "glue" between your application and the services that are provided by UDS Core. It is the smart cluster operator that has working knowledge of UDS Core services in the cluster and takes care of integrating your app with those services for you. To register your application with the UDS Operator, you need to create a `Package` Kubernetes Custom Resource. Within the specification of the `Package` resoure, you can specify different parameters that dictate how the UDS Operator should integrate your app per its unique requirements. The sections below cover creating a `Package` resouce for `podinfo` and integrating `podinfo` with several UDS Core services.
+
+:::note
+The `Package` Custom Kubernetes Resource is different from a [UDS Package](https://uds.defenseunicorns.com/structure/packages/), which is a collection of the Zarf Package for your application and the Kubernetes `Package` Custom Resource.
+:::
+
+#### Create a Package Resource for Podinfo
+Below is a baseline definition of a `Package` Custom Resource for the `podinfo` application. As you progress through this demo, you will add values for `network`, `sso`, and `monitor`. These fields instruct the UDS Operator on how to configure networking, single sign on, and monitoring for the `podinfo` application.
+
+```yaml
+apiVersion: uds.dev/v1alpha1
+kind: Package
+metadata:
+  name: podinfo
+  namespace: podinfo
+spec:
+  network:
+    # Expose rules generate Istio VirtualServices and related network policies
+    expose: {}
+```
+
+Copy this YAML into a code editor and save it as `podinfo-package.yaml`.
+
+#### Secure Podinfo with Istio and Network Policies
+UDS Core deploys Istio, a powerful networking component that allows cluster administrators to end-to-end encrypt all cluster traffic, set explicit rules for traffic routing, add load balancing, and much more. Building on the existing `Package` definition, add the following configuration under `spec.network.expose` field:
+
+```yaml
+apiVersion: uds.dev/v1alpha1
+kind: Package
+metadata:
+  name: podinfo
+  namespace: podinfo
+spec:
+  network:
+    # Expose rules generate Istio VirtualServices and related network policies
+    expose:
+      - service: podinfo
+        selector:
+          app.kubernetes.io/name: podinfo
+        gateway: tenant
+        host: podinfo
+        port: 9898
+```
+This change will allow us to interact with `podinfo` without having to use `kubectl port-forward`. 
+
+Save your chanages and apply the file:
+
+```bash
+kubectl apply -f podinfo-package.yaml
+```
+
+View the package resource:
+
+```bash
+kubectl get package -n podinfo
+NAME      STATUS   SSO CLIENTS            ENDPOINTS             MONITORS   NETWORK POLICIES   AGE
+podinfo   Ready    []                     ["podinfo.uds.dev"]   []         7                  60s
+```
+
+Observe the Istio VirtualService that the UDS Operator created:
+
+```bash
+kubectl get virtualservice -n podinfo
+NAME                                  GATEWAYS                                  HOSTS                 AGE
+podinfo-tenant-podinfo-9898-podinfo   ["istio-tenant-gateway/tenant-gateway"]   ["podinfo.uds.dev"]   60s
+```
+
+You will also notice that the UDS Operator automically generated a set of Kubernetes `NetworkPolicies` that restrict access to your application to only required services:
+
+```bash
+kubectl get networkpolicy -n podinfo
+NAME                                                         POD-SELECTOR                     AGE
+allow-podinfo-egress-dns-lookup-via-coredns                  <none>                           60s
+allow-podinfo-egress-istiod-communication                    <none>                           60s
+allow-podinfo-egress-uds-core-podinfo-authservice-egress     app.kubernetes.io/name=podinfo   60s
+allow-podinfo-egress-uds-core-podinfo-keycloak-jwks-egress   app.kubernetes.io/name=podinfo   60s
+allow-podinfo-ingress-9898-podinfo-istio-tenant-gateway      app.kubernetes.io/name=podinfo   60s
+allow-podinfo-ingress-sidecar-monitoring                     <none>                           60s
+deny-podinfo-default                                         <none>                           60s
+```
+
+Navigate to `podinfo.uds.dev` from your browser to interact with `podinfo`.
+
+#### Integrate with Single Sign On
+At this stage, anyone can access the `podinfo` application. You may wish to protect your application by only allowing authenticated users to access it. As part of UDS Core, the Keycloak Identity and Acess Management Solution is included. Add the configuration under the `spec.sso` field below to integrate the `podinfo` application with Keycloak.
+
+```yaml
+apiVersion: uds.dev/v1alpha1
+kind: Package
+metadata:
+  name: podinfo
+  namespace: podinfo
+spec:
+  network:
+    # Expose rules generate Istio VirtualServices and related network policies
+    expose:
+      - service: podinfo
+        selector:
+          app.kubernetes.io/name: podinfo
+        gateway: tenant
+        host: podinfo
+        port: 9898  
+  # SSO allows for the creation of Keycloak clients and with automatic secret generation and protocolMappers
+  sso:
+    - name: Podinfo SSO
+      clientId: uds-core-podinfo
+      redirectUris:
+        - "https://podinfo.uds.dev/login"
+      enableAuthserviceSelector:
+        app.kubernetes.io/name: podinfo
+      groups:
+        anyOf:
+          - "/UDS Core/Admin"
+```          
+
+Save the file and apply the changes:
+
+```bash
+kubectl apply -f ./podinfo-package.yaml
+```
+
+The package will now show the `uds-core-podinfo` client under `SSO CLIENTS`:
+
+```bash
+NAME      STATUS   SSO CLIENTS            ENDPOINTS             MONITORS                                      NETWORK POLICIES   AGE
+podinfo   Ready    ["uds-core-podinfo"]   ["podinfo.uds.dev"]   ["podinfo-podmonitor","podinfo-svcmonitor"]   9                  10m
+```
+
+:::note
+Notice how the count under `NETWORK POLICIES` has increased. The UDS Operator recognized that additional `NetworkPolicies` were required for Keycloak to communicate with `podinfo`, so it created additional `NetworkPolicies` to allow that.
+:::
+
+When navigating to `podinfo.uds.dev`, you will be redirected to a login screen. Only users that are members of the `UDS Core/Admin` group in Keycloak are permitted to access the site.
+
+#### Add Monitoring and Metrics Scraping
+UDS Core also deploys Prometheus for collecting application metrics. Prometheus relies on `ServiceMonitor` and `PodMonitor` resources that inform Prometheus on which workloads to collect metrics from. These resources can be configured via the `spec.monitor` field in the `Package` Custom Resource:
+
+```yaml
+apiVersion: uds.dev/v1alpha1
+kind: Package
+metadata:
+  name: podinfo
+  namespace: podinfo
+spec:
+  network:
+    # Expose rules generate Istio VirtualServices and related network policies
+    expose:
+      - service: podinfo
+        selector:
+          app.kubernetes.io/name: podinfo
+        gateway: tenant
+        host: podinfo
+        port: 9898  
+  # SSO allows for the creation of Keycloak clients and with automatic secret generation and protocolMappers
+  sso:
+    - name: Podinfo SSO
+      clientId: uds-core-podinfo
+      redirectUris:
+        - "https://podinfo.uds.dev/login"
+      enableAuthserviceSelector:
+        app.kubernetes.io/name: podinfo
+      groups:
+        anyOf:
+          - "/UDS Core/Admin"
+  monitor:
+    - selector:
+        app.kubernetes.io/name: podinfo
+      targetPort: 9898
+      portName: http
+      description: "podmonitor"
+      kind: PodMonitor
+    - selector:
+        app.kubernetes.io/name: podinfo
+      targetPort: 9898
+      portName: http
+      description: "svcmonitor"
+      kind: ServiceMonitor          
+```
+
+Save the file and apply the changes:
+
+```bash
+kubectl apply -f ./podinfo-package.yaml
+```
+
+The package will now show `ServiceMonitors` and `PodMonitors` configured under `MONITORS`:
+
+```bash
+NAME      STATUS   SSO CLIENTS            ENDPOINTS             MONITORS                                      NETWORK POLICIES   AGE
+podinfo   Ready    ["uds-core-podinfo"]   ["podinfo.uds.dev"]   ["podinfo-podmonitor","podinfo-svcmonitor"]   9                  10m
+```
+
+View the `PodMonitor` and `ServiceMonitor` resources that were created by the UDS Operator:
+
+```bash
+kubectl get podmonitor,servicemonitor -n podinfo
+NAME                                                  AGE
+podmonitor.monitoring.coreos.com/podinfo-podmonitor   7m46s
+
+NAME                                                      AGE
+servicemonitor.monitoring.coreos.com/podinfo-svcmonitor   7m46s
+```
+
+:::note
+Hint: All resources created by the UDS Operator for `podinfo` will have a `uds/package=podinfo` label applied to it.
+:::
+
+#### Clean up
+
+Execute the following command to clean up your cluster:
+
+```bash
+k3d cluster delete uds
+```
