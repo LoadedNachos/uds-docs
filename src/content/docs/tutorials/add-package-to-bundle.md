@@ -1,5 +1,5 @@
 ---
-title: Adding the Package Custom Resource to Application Zarf Package
+title: Adding UDS Configuration to a Zarf Package
 
 sidebar:
   order: 3
@@ -30,7 +30,7 @@ components:
         url: https://github.com/stefanprodan/podinfo.git
         gitPath: charts/podinfo
     manifests:
-      - name: podinfo-uds-package
+      - name: podinfo-uds-config
         namespace: podinfo
         files:
           - podinfo-package.yaml
