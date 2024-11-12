@@ -9,6 +9,9 @@ sidebar:
 
 You may wish to always deploy your application as a fully integrated [UDS Package](https://uds.defenseunicorns.com/structure/packages/). In this section, we will cover adding the `podinfo-package.yaml` to the sample UDS Bundle that we created in the first turorial. 
 
+### Prerequisites
+This guide assumes that you created the UDS `Package` Custom Resource in the previous tutorial. 
+
 ### Adding Package Manifest to Podinfo
 
 Within the `zarf.yaml` file that exists in the `package` directory, modify the `podinfo` component to reference the manifest created in the previous tutorial:'
