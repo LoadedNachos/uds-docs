@@ -15,7 +15,7 @@ Read more about the UDS Operator [here](https://uds.defenseunicorns.com/referenc
 
 In this section, we will configure Single Sign On (SSO) for a sample user to access the `podinfo` application. This requires that your Keycloak instance has existing users and groups defined. This configuration has been automated via the `uds` cli. 
 
-In the root of the `package` directory, open a new file called `tasks.yaml` and paste the following lines below:
+In the root of the `package` directory, create a new file called `tasks.yaml` and include the lines below:
 
 ```yaml
 includes:
