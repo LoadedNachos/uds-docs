@@ -110,12 +110,12 @@ packages:
               path: policies
 
   - name: init
-    repository: oci://ghcr.io/defenseunicorns/packages/init
-    ref: v0.36.1
+    repository: oci://ghcr.io/zarf-dev/packages/init
+    ref: v0.42.2
 
   - name: core
     repository: oci://ghcr.io/defenseunicorns/packages/uds/core
-    ref: 0.25.1-upstream
+    ref: 0.30.0-upstream
 
   - name: podinfo
     path: ./

@@ -6,11 +6,24 @@ sidebar:
 ---
 
 ## Background
+
 When UDS Core is deployed into a Kubernetes Cluster, an [operator](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/) is deployed. An operator allows users to extend the functionality of their Kubernetes clusters via [Custom Resource Definitions](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) and custom controllers. This operator, henceforth known as the UDS Operator, looks for `Package` Custom Resources to be created. When a user creates a `Package` resource, the UDS Operator processes the request and performs the necessary operations to create the package per the [specification](https://github.com/defenseunicorns/uds-core/blob/main/docs/reference/configuration/custom%20resources/packages-v1alpha1-cr.md) given.
 
 Read more about the UDS Operator [here](https://uds.defenseunicorns.com/reference/configuration/uds-operator/).
 
+### Prerequisites
+
+In this section, we will configure Single Sign On (SSO) for a sample user to access the `podinfo` application. This requires that your Keycloak instance has existing users and groups defined. This configuration has been automated via the `uds` cli. 
+
+In the root of the `package` directory, create a new file called `tasks.yaml`. Paste the following code below:
+
+```yaml
+includes:
+  - common-setup: https://raw.githubusercontent.com/defenseunicorns/uds-common/refs/tags/v0.13.1/tasks/setup.yaml
+```
+
 ### Integrate Podinfo with UDS Core
+
 You can think of the UDS Operator as the "glue" between your application and the services that are provided by UDS Core. It is the smart cluster operator that has working knowledge of UDS Core services in the cluster and takes care of integrating your app with those services for you. To register your application with the UDS Operator, you need to create a `Package` Kubernetes Custom Resource. Within the specification of the `Package` resoure, you can specify different parameters that dictate how the UDS Operator should integrate your app per its unique requirements. The sections below cover creating a `Package` resouce for `podinfo` and integrating `podinfo` with several UDS Core services.
 
 :::note
@@ -18,6 +31,7 @@ The `Package` Custom Kubernetes Resource is different from a [UDS Package](https
 :::
 
 #### Create a Package Resource for Podinfo
+
 Below is a baseline definition of a `Package` Custom Resource for the `podinfo` application. As you progress through this demo, you will add values for `network`, `sso`, and `monitor`. These fields instruct the UDS Operator on how to configure networking, single sign on, and monitoring for the `podinfo` application.
 
 ```yaml
@@ -35,6 +49,7 @@ spec:
 Copy this YAML into a code editor and save it as `podinfo-package.yaml`.
 
 #### Secure Podinfo with Istio and Network Policies
+
 UDS Core deploys Istio, a powerful networking component that allows cluster administrators to end-to-end encrypt all cluster traffic, set explicit rules for traffic routing, add load balancing, and much more. Building on the existing `Package` definition, add the following configuration under `spec.network.expose` field:
 
 ```yaml
@@ -54,6 +69,7 @@ spec:
         host: podinfo
         port: 9898
 ```
+
 This change will allow us to interact with `podinfo` without having to use `kubectl port-forward`. 
 
 Save your chanages and apply the file:
@@ -95,6 +111,7 @@ deny-podinfo-default                                         <none>             
 Navigate to `podinfo.uds.dev` from your browser to interact with `podinfo`.
 
 #### Integrate with Single Sign On
+
 At this stage, anyone can access the `podinfo` application. You may wish to protect your application by only allowing authenticated users to access it. As part of UDS Core, the Keycloak Identity and Acess Management Solution is included. Add the configuration under the `spec.sso` field below to integrate the `podinfo` application with Keycloak.
 
 ```yaml
@@ -143,9 +160,16 @@ podinfo   Ready    ["uds-core-podinfo"]   ["podinfo.uds.dev"]   ["podinfo-podmon
 Notice how the count under `NETWORK POLICIES` has increased. The UDS Operator recognized that additional `NetworkPolicies` were required for Keycloak to communicate with `podinfo`, so it created additional `NetworkPolicies` to allow that.
 :::
 
-When navigating to `podinfo.uds.dev`, you will be redirected to a login screen. Only users that are members of the `UDS Core/Admin` group in Keycloak are permitted to access the site.
+When navigating to `podinfo.uds.dev`, you will be redirected to a login screen. Only users that are members of the `UDS Core/Admin` group in Keycloak are permitted to access the site. Run the `create-doug-user` task with the UDS CLI to create a test user and login:
+
+```bash
+uds run common-setup:create-doug-user --set KEYCLOAK_GROUP="/UDS Core/Admin"
+```
+
+Use the following credentials for Doug: `username: doug / password: unicorn123!@#UN`
 
 #### Add Monitoring and Metrics Scraping
+
 UDS Core also deploys Prometheus for collecting application metrics. Prometheus relies on `ServiceMonitor` and `PodMonitor` resources that inform Prometheus on which workloads to collect metrics from. These resources can be configured via the `spec.monitor` field in the `Package` Custom Resource:
 
 ```yaml
@@ -217,6 +241,12 @@ servicemonitor.monitoring.coreos.com/podinfo-svcmonitor   7m46s
 :::note
 Hint: All resources created by the UDS Operator for `podinfo` will have a `uds/package=podinfo` label applied to it.
 :::
+
+Now you have successfully intergrated your application with UDS Core!
+
+#### Next Steps
+
+(Optional) With a Package Custom resource now created that integrates `podinfo` into UDS Core, the next guide will cover including the `Package` Custom Resource as part of a UDS Bundle so that you may deploy your fully integrated application in a repeatable manner.
 
 #### Clean up
 
