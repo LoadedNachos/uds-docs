@@ -187,8 +187,6 @@ Example command using the above sample output from `get pods`:
 kubectl port-forward service/podinfo 9898:9898 -n podinfo
 ```
 
-Curl metrics, view pod logs
-
 You can now use a web browser to naviage to `http://localhost:9898` to interact with `podinfo`.
 
 #### Next Steps
