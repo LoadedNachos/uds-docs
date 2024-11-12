@@ -116,6 +116,15 @@ packages:
   - name: core
     repository: oci://ghcr.io/defenseunicorns/packages/uds/core
     ref: 0.30.0-upstream
+    # Set overrides for Keycloak SSO tutorial
+    overrides:
+      keycloak:
+        keycloak:
+          variables:
+            - name: INSECURE_ADMIN_PASSWORD_GENERATION
+              description: "Generate an insecure admin password for dev/test"
+              path: insecureAdminPasswordGeneration.enabled
+              default: "true"
 
   - name: podinfo
     path: ./
@@ -191,4 +200,4 @@ You can now use a web browser to naviage to `http://localhost:9898` to interact 
 
 #### Next Steps
 
-In this section, a Zarf Package was created that consists of the sample application, `podinfo`. The resulting `podinfo` Zarf Package was added UDS Bundle, where additional Zarf Packages, such as a K3d cluster, Zarf Internal components, and UDS Core were included. With the stack now deployed, visit the next page to discover how you can integrate the application with the monitoring, logging, security and other services provided by UDS Core.
+In this section, a Zarf Package was created that consists of the sample application, `podinfo`. The resulting `podinfo` Zarf Package was added to a UDS Bundle where additional Zarf Packages such as a K3d cluster, Zarf Internal components, and UDS Core were included. With the stack now deployed, visit the next page to discover how you can integrate the application with the monitoring, logging, security and other services provided by UDS Core.

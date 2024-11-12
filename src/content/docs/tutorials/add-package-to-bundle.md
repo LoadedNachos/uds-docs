@@ -1,13 +1,11 @@
 ---
-title: Bundling Your Application with UDS Core
+title: Adding the Package Custom Resource to Podinfo Zarf Package
 
 sidebar:
   order: 3
 ---
 
-## Add the Package Custom Resource to Podinfo Zarf Package
-
-You may wish to always deploy your application as a fully integrated [UDS Package](https://uds.defenseunicorns.com/structure/packages/). In this section, we will cover adding the `podinfo-package.yaml` to the sample UDS Bundle that we created in the first tutorial. 
+To consider `podinfo` as a fully integrated [UDS Package](https://uds.defenseunicorns.com/structure/packages/), the `Package` Custom Resource for the UDS Operator must be included as part of the Zarf Package for `podinfo`. In this section, we will cover adding the `podinfo-package.yaml` to the sample UDS Bundle that we created in the first tutorial. 
 
 ### Prerequisites
 This guide assumes that you created the UDS `Package` Custom Resource in the previous tutorial. 
@@ -49,4 +47,12 @@ components:
                 condition: available
 ```
 
-Re-run the `zarf package create` and `uds-create` commands to generate new artifacts that now include the `Package` Custom Resource for `podinfo`.
+Re-run the `zarf package create` and `uds create` commands to generate new artifacts that now include the `Package` Custom Resource for `podinfo`. From there, the bundle can be re-deployed and `podinfo` will be automatically integrated with UDS Core.
+
+#### Clean up
+
+Execute the following command to clean up your cluster:
+
+```bash
+k3d cluster delete uds
+```
