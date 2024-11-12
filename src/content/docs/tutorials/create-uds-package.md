@@ -242,7 +242,7 @@ NAME                                                      AGE
 servicemonitor.monitoring.coreos.com/podinfo-svcmonitor   7m46s
 ```
 
-Now you have successfully integrated `podinfo` application with UDS Core!
+Now you have successfully integrated `podinfo` with UDS Core!
 
 #### Next Steps
 
