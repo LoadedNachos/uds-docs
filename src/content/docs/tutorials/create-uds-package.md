@@ -170,7 +170,7 @@ When navigating to `podinfo.uds.dev`, you will be redirected to a login screen. 
 uds run common-setup:create-doug-user --set KEYCLOAK_GROUP="/UDS Core/Admin"
 ```
 
-Use the following credentials for Doug: `username: doug / password: unicorn123!@#UN`
+Use the following credentials to login: `username: doug / password: unicorn123!@#UN`
 
 #### Add Monitoring and Metrics Scraping
 
