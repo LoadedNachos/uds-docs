@@ -1,5 +1,5 @@
 ---
-title: Adding the Package Custom Resource to Podinfo Zarf Package
+title: Adding the Package Custom Resource to Application Zarf Package
 
 sidebar:
   order: 3
