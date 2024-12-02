@@ -98,13 +98,6 @@ export default defineConfig({
                 collapsed: true
             },
             {
-                label: 'Security',
-                autogenerate: {
-                    directory: 'security'
-                },
-                collapsed: true,
-            },
-            {
                 label: 'Reference',
                 autogenerate: {
                     directory: 'reference'
