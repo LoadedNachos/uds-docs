@@ -73,6 +73,10 @@ export default defineConfig({
         },
         sidebar: [
             {
+                label: 'Home',
+                link: '/',
+            },
+            {
                 label: 'Getting Started',
                 autogenerate: {
                     directory: 'getting-started'
