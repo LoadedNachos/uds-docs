@@ -47,3 +47,6 @@ done
 
 # Clean up and remove the temp folder
 rm -rf temp
+
+# Remove the dev docs folders if present
+rm -rf "$TARGET_DIR/dev"
