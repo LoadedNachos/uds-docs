@@ -1,0 +1,11 @@
+{
+  "extends": [
+    "github>defenseunicorns/uds-common//config/renovate.json5",
+    ":semanticCommits",
+    ":semanticCommitTypeAll(chore)"
+  ],
+  "ignorePresets": [":ignoreModulesAndTests"],
+  "branchConcurrentLimit": 0,
+  "prConcurrentLimit": 0,
+  "prHourlyLimit": 0
+}
