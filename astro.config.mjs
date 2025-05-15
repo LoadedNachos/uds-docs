@@ -1,13 +1,15 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-import tailwind from "@astrojs/tailwind";
 import starlightDocSearch from '@astrojs/starlight-docsearch';
 import starlightLinksValidator from 'starlight-links-validator';
 import starlightImageZoom from 'starlight-image-zoom';
 
+import tailwindcss from '@tailwindcss/vite';
+
 // https://astro.build/config
 export default defineConfig({
     site: 'https://uds.defenseunicorns.com/docs/',
+
     redirects:
     {
         '/docs': '/',
@@ -36,6 +38,7 @@ export default defineConfig({
         '/reference/configuration/uds-operator/': '/reference/configuration/uds-operator/overview/',
         '/reference/configuration/uds-user-groups/': '/reference/configuration/single-sign-on/overview/',
     },
+
     integrations: [starlight({
         plugins: [
             starlightLinksValidator(),
@@ -145,8 +148,10 @@ export default defineConfig({
                 badge: { text: 'New!', variant: 'tip' }
             },
         ],
-    }), tailwind({
-            applyBaseStyles: false
-        }
-    )]
+    })],
+
+    vite: {
+        plugins: [tailwindcss()]
+    }
 });
+
