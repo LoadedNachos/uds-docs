@@ -1,10 +1,12 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import starlightLinksValidator from 'starlight-links-validator';
-import starlightImageZoom from 'starlight-image-zoom';
 import starlightLlmsTxt from 'starlight-llms-txt';
 
 import tailwindcss from '@tailwindcss/vite';
+import { LikeC4VitePlugin } from 'likec4/vite-plugin';
+import starlightImageZoom from 'starlight-image-zoom';
+import react from '@astrojs/react';
 
 // https://astro.build/config
 export default defineConfig({
@@ -45,7 +47,9 @@ export default defineConfig({
         '/reference/deployment/secret-pod-reload/': '/reference/deployment/pod-reload/'
     },
 
-    integrations: [starlight({
+    integrations: [
+      react(),
+      starlight({
         plugins: [
             starlightLinksValidator(),
             starlightImageZoom(),
@@ -70,7 +74,7 @@ export default defineConfig({
               promote: ['index*', 'getting-started/**', 'overview/**', 'structure/**', 'reference/cli/**'],
               minify: { note: true, tip: true, caution: true, danger: true, details: true, whitespace: true },
               pageSeparator: '\n\n-----\n\n',
-              rawContent: false,
+              rawContent: true,
             })
         ],
         defaultLocale: 'root',
@@ -171,10 +175,15 @@ export default defineConfig({
                 badge: { text: 'New!', variant: 'tip' }
             },
         ],
-    })],
 
-    vite: {
-        plugins: [tailwindcss()]
-    }
+    },
+  )],
+  vite: {
+    plugins: [
+      tailwindcss(),
+      LikeC4VitePlugin({
+        modelRoot: './src/content/docs/.c4/',
+      }),
+    ],
+  },
 });
-
