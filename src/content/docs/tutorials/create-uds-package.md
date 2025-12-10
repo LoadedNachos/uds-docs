@@ -20,7 +20,7 @@ In the root of the `package` directory, create a new file called `tasks.yaml` an
 <!-- renovate:uds-common -->
 ```yaml
 includes:
-  - setup: https://raw.githubusercontent.com/defenseunicorns/uds-common/v1.21.3/tasks/setup.yaml
+  - common-setup: https://raw.githubusercontent.com/defenseunicorns/uds-common/v1.21.3/tasks/setup.yaml
 ```
 
 ### Integrate Podinfo with UDS Core
@@ -174,7 +174,7 @@ Notice how the count under `NETWORK POLICIES` has increased. The UDS Operator re
 When navigating to https://podinfo.uds.dev/, you will be redirected to a login screen. Only users that are members of the `/UDS Core/Admin` group in Keycloak are permitted to access the site. Create a test user in that group with the following command (using the uds-common task included above):
 
 ```bash
-uds run setup:keycloak-user --set KEYCLOAK_USER_GROUP="/UDS Core/Admin"
+uds run common-setup:keycloak-user --set KEYCLOAK_USER_GROUP="/UDS Core/Admin"
 ```
 
 Use the following credentials to login to https://podinfo.uds.dev/: `username: doug / password: unicorn123!@#UN`
