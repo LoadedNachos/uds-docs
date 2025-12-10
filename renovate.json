@@ -330,6 +330,18 @@
             ]
         },
         {
+            "enabled": false,
+            "matchFileNames": [
+                "^src/content/docs/.*\\.(md|mdx)$"
+            ],
+            "matchDatasources": [
+                "git-tags"
+            ],
+            "matchPackageNames": [
+                "https://github.com/stefanprodan/podinfo.git"
+            ]
+        },
+        {
             "matchPackageNames": [
                 "registry1.dso.mil/ironbank/big-bang/base"
             ],
