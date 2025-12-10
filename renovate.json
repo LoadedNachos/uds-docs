@@ -307,18 +307,6 @@
             "datasourceTemplate": "docker",
             "depNameTemplate": "ghcr.io/stefanprodan/podinfo",
             "versioningTemplate": "docker"
-        },
-        {
-            "customType": "regex",
-            "managerFilePatterns": [
-                "/^src\\/content\\/docs\\/.*\\.(md|mdx)$/"
-            ],
-            "matchStrings": [
-                "<!--\\s*renovate:podinfo-chart\\s*-->[\\s\\S]*?name:\\s*podinfo[\\s\\S]*?version:\\s*(?<currentValue>\\d+\\.\\d+\\.\\d+)[\\s\\S]*?url:\\s*https://github\\.com/stefanprodan/podinfo\\.git"
-            ],
-            "datasourceTemplate": "git-tags",
-            "depNameTemplate": "https://github.com/stefanprodan/podinfo.git",
-            "versioningTemplate": "semver"
         }
     ],
     "packageRules": [
