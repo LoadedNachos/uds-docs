@@ -319,6 +319,12 @@
         {
             "enabled": false,
             "matchFileNames": [
+                "^src/content/docs/structure/packages.md$"
+            ]
+        },
+        {
+            "enabled": false,
+            "matchFileNames": [
                 "^src/content/docs/.*\\.(md|mdx)$"
             ],
             "matchDatasources": [
