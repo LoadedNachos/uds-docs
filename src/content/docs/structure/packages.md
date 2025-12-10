@@ -267,7 +267,7 @@ packages:
   # Repo behind the package: https://github.com/defenseunicorns/uds-package-postgres-operator
   - name: postgres-operator
     repository: ghcr.io/defenseunicorns/packages/uds/postgres-operator
-    ref: 1.13.0-uds.2-upstream
+    ref: 1.14.0-uds.2-upstream
     overrides:
       postgres-operator:
         uds-postgres-config:
