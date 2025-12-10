@@ -268,8 +268,9 @@
                 "<!--\\s*renovate:uds-k3d-ref\\s*-->[\\s\\S]*?repository:\\s*ghcr\\.io/defenseunicorns/packages/uds-k3d[\\s\\S]*?ref:\\s*(?<currentValue>\\d+\\.\\d+\\.\\d+)"
             ],
             "datasourceTemplate": "docker",
-            "depNameTemplate": "ghcr.io/defenseunicorns/uds-k3d",
-            "versioningTemplate": "docker"
+            "depNameTemplate": "ghcr.io/defenseunicorns/packages/uds-k3d",
+            "versioningTemplate": "docker",
+            "registryUrlTemplate": "https://ghcr.io"
         },
         {
             "customType": "regex",
