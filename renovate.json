@@ -277,7 +277,7 @@
                 "/^src\\/content\\/docs\\/.*\\.(md|mdx)$/"
             ],
             "matchStrings": [
-                "name:\\s*[^\\n]+[\\s\\S]*?version:\\s*(?<currentValue>\\d+\\.\\d+\\.\\d+)[\\s\\S]*?url:\\s*(?<gitUrl>https?://[^\\s]+\\.git)"
+                "(?m)name:\\s*[^\\n]+[\\s\\S]*?version:\\s*(?<currentValue>\\d+\\.\\d+\\.\\d+)[\\s\\S]*?url:\\s*[\"']?(?<gitUrl>https?://(?:github\\.com|gitlab\\.com|bitbucket\\.org)/[^\\s\"']+?\\.git)[\"']?\\s*$"
             ],
             "datasourceTemplate": "git-tags",
             "depNameTemplate": "{{gitUrl}}",
