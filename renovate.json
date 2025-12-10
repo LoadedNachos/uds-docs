@@ -53,7 +53,7 @@
                 ".*(\\.ya?ml|\\.json|\\.tf)$"
             ],
             "matchStrings": [
-                "https:\\/\\/github\\.com\\/(?<depName>[^\\/]+\\/[^\\/]+)\\/raw\\/(?<currentValue>[^\\/]+)"
+                "https:\\/\\/github\\.com\\/(?<depName>[^\\/]+\\/[^\\/]+)\\/raw\\/(?<currentValue>v?\\d+\\.\\d+(?:\\.\\d+)?)"
             ],
             "versioningTemplate": "semver-coerced",
             "datasourceTemplate": "github-tags"
@@ -64,7 +64,7 @@
                 ".*(\\.ya?ml|\\.json|\\.tf)$"
             ],
             "matchStrings": [
-                "https:\\/\\/github\\.com\\/(?<depName>[^\\/]+\\/[^\\/]+)\\/releases\\/download\\/(?<currentValue>[^\\/]+)"
+                "https:\\/\\/github\\.com\\/(?<depName>[^\\/]+\\/[^\\/]+)\\/releases\\/download\\/(?<currentValue>v?\\d+\\.\\d+(?:\\.\\d+)?)"
             ],
             "versioningTemplate": "semver-coerced",
             "datasourceTemplate": "github-tags"
@@ -257,7 +257,9 @@
             ],
             "datasourceTemplate": "docker",
             "depNameTemplate": "{{registry}}/{{depPath}}",
-            "versioningTemplate": "docker",
+            "versioningTemplate": "regex:^v?(?<major>\\d+)(\\.(?<minor>\\d+))?(\\.(?<patch>\\d+))?",
+            "extractVersionTemplate": "^(?<version>v?\\d+\\.\\d+(?:\\.\\d+)?)(?<suffix>-uds\\.\\d+(?:-[\\w.-]+)?)?$",
+            "autoReplaceStringTemplate": "{{{newValue}}}{{{suffix}}}",
             "registryUrlTemplate": "https://{{registry}}"
         },
         {
@@ -266,10 +268,28 @@
                 "/^src\\/content\\/docs\\/.*\\.(md|mdx)$/"
             ],
             "matchStrings": [
-                "(?m)^\\s*-\\s+(?<depName>(?:ghcr\\.io|quay\\.io|docker\\.io)/[^\\s:@]+(?:/[^\\s:@]+)*):(?<currentValue>[\\w.\\-]+)\\s*$"
+                "(?m)^\\s*-\\s+['\"]?(?<depName>(?:ghcr\\.io|quay\\.io|docker\\.io)/[^\\s:@'\"]+(?:/[^\\s:@'\"]+)*)['\"]?:(?<currentValue>[\\w.\\-]+)\\s*$"
             ],
             "datasourceTemplate": "docker",
             "versioningTemplate": "docker"
+        },
+        {
+            "customType": "regex",
+            "managerFilePatterns": [
+                "/^src\\/content\\/docs\\/.*\\.(md|mdx)$/"
+            ],
+            "matchStringsStrategy": "recursive",
+            "matchStrings": [
+                "(?m)image:\\s*$((.|\\n)*?)^(?:\\S|$)",
+                "(?m)^\\s{2,}registry:\\s*(?<registry>(?:ghcr\\.io|quay\\.io|docker\\.io))\\s*$",
+                "(?m)^\\s{2,}repository:\\s*(?<repository>[^\\s]+)\\s*$",
+                "(?m)^\\s{2,}tag:\\s*(?<currentValue>[^\\s]+)\\s*$"
+            ],
+            "datasourceTemplate": "docker",
+            "depNameTemplate": "{{registry}}/{{repository}}",
+            "versioningTemplate": "regex:^v?(?<major>\\d+)(\\.(?<minor>\\d+))?(\\.(?<patch>\\d+))?",
+            "extractVersionTemplate": "^(?<version>v?\\d+\\.\\d+(?:\\.\\d+)?)(?<suffix>-uds\\.\\d+(?:-[\\w.-]+)?)?$",
+            "autoReplaceStringTemplate": "{{{newValue}}}{{{suffix}}}"
         },
         {
             "customType": "regex",
@@ -296,6 +316,19 @@
         }
     ],
     "packageRules": [
+        {
+            "enabled": false,
+            "matchFileNames": [
+                "^src/content/docs/.*\\.(md|mdx)$"
+            ],
+            "matchDatasources": [
+                "docker"
+            ],
+            "matchPackageNames": [
+                "ghcr.io/defenseunicorns/packages/uds/valkey",
+                "ghcr.io/defenseunicorns/packages/uds/postgres-operator"
+            ]
+        },
         {
             "matchPackageNames": [
                 "registry1.dso.mil/ironbank/big-bang/base"
