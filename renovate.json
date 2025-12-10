@@ -278,18 +278,11 @@
             "managerFilePatterns": [
                 "/^src\\/content\\/docs\\/.*\\.(md|mdx)$/"
             ],
-            "matchStringsStrategy": "recursive",
             "matchStrings": [
-                "(?m)image:\\s*$((.|\\n)*?)^(?:\\S|$)",
-                "(?m)^\\s{2,}registry:\\s*(?<registry>(?:ghcr\\.io|quay\\.io|docker\\.io))\\s*$",
-                "(?m)^\\s{2,}repository:\\s*(?<repository>[^\\s]+)\\s*$",
-                "(?m)^\\s{2,}tag:\\s*(?<currentValue>[^\\s]+)\\s*$"
+                "(?m)^\\s*-\\s+['\"]?(?<depName>(?:ghcr\\.io|quay\\.io|docker\\.io)/[^\\s:@'\"]+(?:/[^\\s:@'\"]+)*)['\"]?:(?<currentValue>[\\w.\\-]+)\\s*$"
             ],
             "datasourceTemplate": "docker",
-            "depNameTemplate": "{{registry}}/{{repository}}",
-            "versioningTemplate": "regex:^v?(?<major>\\d+)(\\.(?<minor>\\d+))?(\\.(?<patch>\\d+))?",
-            "extractVersionTemplate": "^(?<version>v?\\d+\\.\\d+(?:\\.\\d+)?)(?<suffix>-uds\\.\\d+(?:-[\\w.-]+)?)?$",
-            "autoReplaceStringTemplate": "{{{newValue}}}{{{suffix}}}"
+            "versioningTemplate": "docker"
         },
         {
             "customType": "regex",
@@ -319,32 +312,7 @@
         {
             "enabled": false,
             "matchFileNames": [
-                "^src/content/docs/structure/packages.md$"
-            ]
-        },
-        {
-            "enabled": false,
-            "matchFileNames": [
-                "^src/content/docs/.*\\.(md|mdx)$"
-            ],
-            "matchDatasources": [
-                "docker"
-            ],
-            "matchPackageNames": [
-                "ghcr.io/defenseunicorns/packages/uds/valkey",
-                "ghcr.io/defenseunicorns/packages/uds/postgres-operator"
-            ]
-        },
-        {
-            "enabled": false,
-            "matchFileNames": [
-                "^src/content/docs/.*\\.(md|mdx)$"
-            ],
-            "matchDatasources": [
-                "git-tags"
-            ],
-            "matchPackageNames": [
-                "https://github.com/stefanprodan/podinfo.git"
+                "src/content/docs/structure/packages.md"
             ]
         },
         {
