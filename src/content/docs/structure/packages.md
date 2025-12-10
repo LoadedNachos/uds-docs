@@ -291,7 +291,7 @@ packages:
   # Repo behind the package: https://github.com/defenseunicorns/uds-package-valkey
   - name: valkey
     repository: ghcr.io/defenseunicorns/packages/uds/valkey
-    ref: 7.2.7-uds.0-upstream
+    ref: 8.1.3-uds.0-upstream
     overrides:
       valkey:
         uds-valkey-config:
