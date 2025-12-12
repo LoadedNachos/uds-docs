@@ -327,6 +327,16 @@
             "registryUrls": [
                 "https://registry.opentofu.org"
             ]
+        },
+        // Keep podinfo chart version + container image tag updates in a single PR so docs never reference mismatched versions.
+        {
+            "groupName": "podinfo docs",
+            "groupSlug": "podinfo-docs",
+            "matchManagers": ["custom.regex"],
+            "matchDepNames": [
+                "https://github.com/stefanprodan/podinfo.git",
+                "ghcr.io/stefanprodan/podinfo"
+            ]
         }
     ]
 }
