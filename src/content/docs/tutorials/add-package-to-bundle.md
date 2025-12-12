@@ -36,7 +36,7 @@ components:
         files:
           - podinfo-package.yaml
     images:
-      - ghcr.io/stefanprodan/podinfo:6.4.0
+      - ghcr.io/stefanprodan/podinfo:6.9.4
     actions:
       onDeploy:
         after:

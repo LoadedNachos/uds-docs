@@ -46,7 +46,7 @@ components:
         url: https://github.com/stefanprodan/podinfo.git
         gitPath: charts/podinfo
     images:
-      - ghcr.io/stefanprodan/podinfo:6.9.1
+      - ghcr.io/stefanprodan/podinfo:6.9.4
     actions:
       onDeploy:
         after:
