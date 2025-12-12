@@ -328,15 +328,13 @@
                 "https://registry.opentofu.org"
             ]
         },
-        // Keep podinfo chart version + container image tag updates in a single PR so docs never reference mismatched versions.
+        // Group updates from our docs regex customManagers (docker + git/github tags) into one PR.
         {
-            "groupName": "podinfo docs",
-            "groupSlug": "podinfo-docs",
+            "groupName": "Docs dependencies",
+            "groupSlug": "docs-deps",
             "matchManagers": ["custom.regex"],
-            "matchDepNames": [
-                "https://github.com/stefanprodan/podinfo.git",
-                "ghcr.io/stefanprodan/podinfo"
-            ]
+            "matchDatasources": ["docker", "git-tags", "github-tags"],
+            "matchFileNames": ["src/content/docs/**"]
         }
     ]
 }
