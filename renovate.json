@@ -255,18 +255,18 @@
       "versioningTemplate": "docker"
     },
     {
-      "customType": "regex",
-      "managerFilePatterns": [
+    "customType": "regex",
+    "managerFilePatterns": [
         "/^src\\/content\\/docs\\/.*\\.(md|mdx)$/"
-      ],
-      // Test: https://regex101.com/r/2bifNc/
-      "matchStrings": [
-        "repository:\\s*(?:(?:oci:\\/\\/)?(?P<registry>ghcr\\.io)\\/(?P<depPath>[^\\s]+))[\\s\\S]*?ref:\\s*(?P<currentValue>[^\\s\"']+)"
-      ],
-      "datasourceTemplate": "docker",
-      "depNameTemplate": "{{registry}}/{{depPath}}",
-      "versioningTemplate": "docker",
-      "registryUrlTemplate": "https://{{registry}}"
+    ],
+    "matchStrings": [
+        "repository:\\s*(?:(?:oci:\\/\\/)?(?<registry>ghcr\\.io)\\/(?<depPath>[^\\s]+))[\\s\\S]*?ref:\\s*(?<currentValue>[^\\s\"']+)"
+    ],
+    "currentValueTemplate": "{{{currentValue}}}",
+    "datasourceTemplate": "docker",
+    "depNameTemplate": "{{registry}}/{{depPath}}",
+    "versioningTemplate": "docker",
+    "registryUrlTemplate": "https://{{registry}}"
     },
     {
       "customType": "regex",
